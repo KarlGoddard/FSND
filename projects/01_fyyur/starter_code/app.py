@@ -103,18 +103,18 @@ def index():
 def venues():
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
-
-  all_info = Venue.query.group_by(Venue.city, Venue.state).all()
+  # current_time = datetime.now().strftime('%Y-%m-%d %H:%S:%M')
+  all_cities = Venue.query.distinct(Venue.city, Venue.state).all()
   data = []
 
-  for city in all_info:
-    venues = Venue.query.filter_by(state=city.state).filter_by(city=city.city).all()
+  for area in all_cities:
+    area_venues = Venue.query.filter_by(state=area.state).filter_by(city=area.city).all()
     venue_data = []
-    for venue in venues:
+    for venue in area_venues:
       venue_data.append({
         "id": venue.id,
         "name": venue.name,
-        "num_upcoming_shows": 1
+        "num_upcoming_shows": len(db.session.query(Show).filter(Show.venue_id==1).filter(Show.start_time>datetime.now()).all())
       })
     data.append({
       "city": area.city,
@@ -122,17 +122,9 @@ def venues():
       "venues": venue_data
     })
 
-  # data = []
-  # allVenues = Venue.query.all()
-  #
-  # for city in allVenues
-  # data.append({
-  #   "city": allVenues.city
-  # })
-
   return render_template('pages/venues.html', areas=data);
 
-@app.route('/venues_originalRef_toDelete')
+@app.route('/venues_orig')
 def venues_orig():
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
