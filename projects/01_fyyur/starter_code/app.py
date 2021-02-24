@@ -137,9 +137,21 @@ def search_venues():
   # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
 
   search_term=request.form.get('search_term', '')
-  search_found = Venue.query.filter_by(Venue.name.ilike(f'%{search_term}%')).all()
+  search_found = Venue.query.filter(Venue.name.ilike(f'%{search_term}%')).all()
   data=[]
-  
+
+  for find in search_found:
+    data.append({
+      "id": find.id,
+      "name": find.name,
+      "num_upcoming_shows": 0
+    })
+
+    response = {
+      "count": 5,
+      "data": data
+      }
+
   # response={
   #   "count": 1,
   #   "data": [{
