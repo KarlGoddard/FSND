@@ -149,44 +149,52 @@ def show_venue(venue_id):
   # TODO: replace with real venue data from the venues table, using venue_id
 
  # venue = Venue.query.get(venue_id)
- venue = Venue.query.filter_by(id=venue_id).first_or_404()
+ venue = Venue.query.filter_by(id=venue_id).first()
 
  upcoming_show_list = db.session.query(Show).join(Artist).filter(Show.venue_id==venue_id).all()
  past_show_list = upcoming_show_list
 
  upcoming_shows = []
+
+ for show in upcoming_show_list:
+    upcoming_shows.append({
+        'artist_id': show.artist.id,
+        'artist_name': show.artist.name,
+        'artist_image_link': show.artist.image_link,
+        'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S'),
+      })
+
  past_shows = []
 
  for show in past_show_list:
     past_shows.append({
+        'artist_id': show.artist.id,
+        'artist_name': show.artist.name,
+        'artist_image_link': show.artist.image_link,
         'start_time': show.start_time.strftime('%Y-%m-%d %H:%M:%S'),
       })
 
  data = {
    "id": venue.id,
    "name": venue.name,
-   "genres": ["Jazz", "Reggae", "Swing", "Classical", "Folk"],
+   "genres": [{
+     "genre" : venue.genres
+   }],
    "address": venue.address,
    "city": venue.city,
    "state": venue.state,
-   "phone": "123-123-1234",
-   "website": "https://www.themusicalhop.com",
-   "facebook_link": "https://www.facebook.com/TheMusicalHop",
-   "seeking_talent": True,
-   "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
-   "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
-   "past_shows": [{
-     "artist_id": 4,
-     "artist_name": "Guns N Petals",
-     "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
-     "start_time": "2019-05-21T21:30:00.000Z"
-   }],
-   "upcoming_shows": past_shows,
+   "phone": venue.phone,
+   "website": venue.website,
+   "facebook_link": venue.facebook_link,
+   "seeking_talent": venue.seeking_talent,
+   "seeking_description": venue.seeking_description,
+   "image_link": venue.image_link,
+   "past_shows": past_shows,
+   "upcoming_shows": upcoming_shows,
    "past_shows_count": len(past_shows),
    "upcoming_shows_count": len(upcoming_shows),
  }
 
- # data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
  return render_template('pages/show_venue.html', venue=data)
 
 #  Create Venue
