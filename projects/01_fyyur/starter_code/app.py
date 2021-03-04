@@ -145,14 +145,11 @@ def search_venues():
 
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
-  # shows the venue page with the given venue_id
-  # TODO: replace with real venue data from the venues table, using venue_id
 
- # venue = Venue.query.get(venue_id)
  venue = Venue.query.filter_by(id=venue_id).first()
 
- upcoming_show_list = db.session.query(Show).join(Artist).filter(Show.venue_id==venue_id).all()
- past_show_list = upcoming_show_list
+ upcoming_show_list = db.session.query(Show).join(Artist).filter(Show.venue_id==venue_id,Show.start_time >= datetime.now()).all()
+ past_show_list = db.session.query(Show).join(Artist).filter(Show.venue_id==venue_id,Show.start_time < datetime.now()).all()
 
  upcoming_shows = []
 
