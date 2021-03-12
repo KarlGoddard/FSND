@@ -96,7 +96,7 @@ def index():
   return render_template('pages/home.html')
 
 
-#  Venues
+#  Show all Venues
 #  ----------------------------------------------------------------
 
 @app.route('/venues')
@@ -122,6 +122,9 @@ def venues():
 
   return render_template('pages/venues.html', areas=data);
 
+#  Search Venues
+#  ----------------------------------------------------------------
+
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
 
@@ -142,6 +145,8 @@ def search_venues():
 
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
+#  Display individual Venue
+#  ----------------------------------------------------------------
 
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
@@ -194,6 +199,42 @@ def show_venue(venue_id):
 
  return render_template('pages/show_venue.html', venue=data)
 
+#  Update Venue
+#  ----------------------------------------------------------------
+
+@app.route('/venues/<int:venue_id>/edit', methods=['GET'])
+def edit_venue(venue_id):
+
+  venue = Venue.query.get(venue_id)
+  form = VenueForm(obj=venue)
+
+  return render_template('forms/edit_venue.html', form=form, venue=venue)
+
+@app.route('/venues/<int:venue_id>/edit', methods=['POST'])
+def edit_venue_submission(venue_id):
+
+  form = VenueForm(request.form)
+
+  error = False
+  try:
+    venue = Venue.query.get(venue_id)
+    form.populate_obj(venue)
+    db.session.commit()
+  except Exception as e:
+    error = True
+    db.session.rollback()
+  finally:
+    db.session.close()
+  if error:
+       # unsuccesful
+    flash('An error occurred. Venue ' + request.form['name'] + ' could not be edited.')
+  else:
+       # successful
+    flash('Venue ' + request.form['name'] + ' was successfully edited!')
+
+  return redirect(url_for('show_venue', venue_id=venue_id))
+
+
 #  Create Venue
 #  ----------------------------------------------------------------
 
@@ -232,6 +273,9 @@ def create_venue_submission():
 
     return render_template('pages/home.html')
 
+#  Delete Venue
+#  ----------------------------------------------------------------
+
 @app.route('/venues/<venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):
 
@@ -255,8 +299,10 @@ def delete_venue(venue_id):
 
     return render_template('pages/home.html')
 
-#  Artists
+
+#  Show all Artists
 #  ----------------------------------------------------------------
+
 @app.route('/artists')
 def artists():
 
@@ -270,6 +316,9 @@ def artists():
     })
 
   return render_template('pages/artists.html', artists=data)
+
+#  Search Artists
+#  ----------------------------------------------------------------
 
 @app.route('/artists/search', methods=['POST'])
 def search_artists():
@@ -290,6 +339,9 @@ def search_artists():
       }
 
   return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))
+
+#  Display individual Artist
+#  ----------------------------------------------------------------
 
 @app.route('/artists/<int:artist_id>')
 def show_artist(artist_id):
@@ -341,8 +393,9 @@ def show_artist(artist_id):
 
   return render_template('pages/show_artist.html', artist=data)
 
-#  Update
+#  Update Artist
 #  ----------------------------------------------------------------
+
 @app.route('/artists/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
 
@@ -374,40 +427,6 @@ def edit_artist_submission(artist_id):
     flash('Artist ' + request.form['name'] + ' was successfully edited!')
 
   return redirect(url_for('show_artist', artist_id=artist_id))
-
-
-
-@app.route('/venues/<int:venue_id>/edit', methods=['GET'])
-def edit_venue(venue_id):
-
-  venue = Venue.query.get(venue_id)
-  form = VenueForm(obj=venue)
-
-  return render_template('forms/edit_venue.html', form=form, venue=venue)
-
-@app.route('/venues/<int:venue_id>/edit', methods=['POST'])
-def edit_venue_submission(venue_id):
-
-  form = VenueForm(request.form)
-
-  error = False
-  try:
-    venue = Venue.query.get(venue_id)
-    form.populate_obj(venue)
-    db.session.commit()
-  except Exception as e:
-    error = True
-    db.session.rollback()
-  finally:
-    db.session.close()
-  if error:
-       # unsuccesful
-    flash('An error occurred. Venue ' + request.form['name'] + ' could not be edited.')
-  else:
-       # successful
-    flash('Venue ' + request.form['name'] + ' was successfully edited!')
-
-  return redirect(url_for('show_venue', venue_id=venue_id))
 
 #  Create Artist
 #  ----------------------------------------------------------------
@@ -447,7 +466,7 @@ def create_artist_submission():
     return render_template('pages/home.html')
 
 
-#  Shows
+#  Show all Shows
 #  ----------------------------------------------------------------
 
 @app.route('/shows')
@@ -468,6 +487,9 @@ def shows():
       })
 
   return render_template('pages/shows.html', shows=data)
+
+#  Create show
+#  ----------------------------------------------------------------
 
 @app.route('/shows/create')
 def create_shows():
