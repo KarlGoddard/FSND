@@ -335,28 +335,34 @@ def edit_artist(artist_id):
 
   artist = Artist.query.get(artist_id)
   form = ArtistForm(obj=artist)
-  # artist={
-  #   "id": 4,
-  #   "name": "Guns N Petals",
-  #   "genres": ["Rock n Roll"],
-  #   "city": "San Francisco",
-  #   "state": "CA",
-  #   "phone": "326-123-5000",
-  #   "website": "https://www.gunsnpetalsband.com",
-  #   "facebook_link": "https://www.facebook.com/GunsNPetals",
-  #   "seeking_venue": True,
-  #   "seeking_description": "Looking for shows to perform at in the San Francisco Bay Area!",
-  #   "image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80"
-  # }
 
   return render_template('forms/edit_artist.html', form=form, artist=artist)
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
-  # TODO: take values from the form submitted, and update existing
-  # artist record with ID <artist_id> using the new attributes
+
+  form = ArtistForm(request.form)
+
+  error = False
+  try:
+    artist = Artist.query.get(artist_id)
+    form.populate_obj(artist)
+    db.session.commit()
+  except Exception as e:
+    error = True
+    db.session.rollback()
+  finally:
+    db.session.close()
+  if error:
+       # unsuccesful
+    flash('An error occurred. Artist ' + request.form['name'] + ' could not be edited.')
+  else:
+       # successful
+    flash('Artist ' + request.form['name'] + ' was successfully edited!')
 
   return redirect(url_for('show_artist', artist_id=artist_id))
+
+
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
@@ -369,23 +375,10 @@ def edit_venue(venue_id):
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
 
-  # TODO: take values from the form submitted, and update existing
-  # venue record with ID <venue_id> using the new attributes
-
   form = VenueForm(request.form)
 
   error = False
   try:
-    # venue = Venue(
-    # name = request.form['name'],
-    # city = request.form['city'],
-    # state = request.form['state'],
-    # address = request.form['address'],
-    # phone = request.form['phone'],
-    # genres = request.form.getlist('genres'),
-    # facebook_link = request.form.get('facebook_link'),
-    # )
-    # db.session.update(venue)
     venue = Venue.query.get(venue_id)
     form.populate_obj(venue)
     db.session.commit()
@@ -400,8 +393,6 @@ def edit_venue_submission(venue_id):
   else:
        # successful
     flash('Venue ' + request.form['name'] + ' was successfully edited!')
-
-    # return render_template('pages/home.html')
 
   return redirect(url_for('show_venue', venue_id=venue_id))
 
