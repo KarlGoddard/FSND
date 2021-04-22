@@ -12,21 +12,27 @@ def create_app(test_config=None):
   # create and configure the app
   app = Flask(__name__)
   setup_db(app)
-  CORS(app)
-
-    @app.after_request
-    def after_request(response):
+  cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+  @app.after_request
+  def after_request(response):
         response.headers.add('Access-Control-Allow-Headers','Content-Type,Authorization')
         response.headers.add('Access-Control-Allow-Methods','GET, POST, PATCH, DELETE, OPTIONS')
         return response
 
-  '''
-  @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
-  '''
+  @app.route('/categories')
+  def retrieve_books():
+    selection = Category.query.all()
+    # current_books = paginate_books(request, selection)
 
-  '''
-  @TODO: Use the after_request decorator to set Access-Control-Allow
-  '''
+    # if len(current_books) == 0:
+    #   abort(404)
+
+    return jsonify({
+      'success': True,
+      'categories': selection,
+      'total_categories': len(Category.query.all())
+    })
+
 
   '''
   @TODO:
