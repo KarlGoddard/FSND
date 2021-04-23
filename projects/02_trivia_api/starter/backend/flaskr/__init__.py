@@ -20,17 +20,19 @@ def create_app(test_config=None):
         return response
 
   @app.route('/categories')
-  def retrieve_books():
-    selection = Category.query.all()
+  def retrieve_categories():
+    cats = Category.query.all()
+    categories = {cats.id:cats.type for cat in cats}
     # current_books = paginate_books(request, selection)
 
     # if len(current_books) == 0:
     #   abort(404)
 
     return jsonify({
-      'success': True,
-      'categories': selection,
-      'total_categories': len(Category.query.all())
+      categories
+      # 'success': True,
+      # 'categories': selection,
+      # 'total_categories': len(Category.query.all())
     })
 
 
