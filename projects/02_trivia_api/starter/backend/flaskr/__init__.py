@@ -49,18 +49,21 @@ def create_app(test_config=None):
   '''
   @app.route('/questions')
   def retrieve_questions():
-    selection = Question.query.order_by(Question.id).all()
-    current_questions = paginate_questions(request, selection)
+    questions = Question.query.order_by(Question.id).all()
+    current_questions = paginate_questions(request, questions)
 
     if len(current_questions) == 0:
       abort(404)
+
+    # categories = {1:'Science',2:'Art',3:'Geography'}
+    categories = {1:'Science'}
 
     return jsonify({
       'success': True,
       'questions': current_questions,
       'total_questions': len(Question.query.all()),
-      'current_category' : 'aaa',
-      'categories' : 'bbb'
+      'current_category' : {1:'Sport'},
+      'categories' : categories
     })
 
   '''
@@ -75,6 +78,28 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions.
   '''
+
+  @app.route('/questions/<int:question_id>', methods=['DELETE'])
+  def delete_question(question_id):
+    try:
+      question = Question.query.filter(Question.id == question_id).one_or_none()
+
+      if question is None:
+        abort(404)
+
+      question.delete()
+      selection = Question.query.order_by(Question.id).all()
+      current_questions = paginate_books(request, selection)
+
+      return jsonify({
+        'success': True,
+        'deleted': question_id,
+        'questions': current_questions,
+        'total_questions': len(Question.query.all())
+      })
+
+    except:
+      abort(422)
 
   '''
   @TODO:
@@ -133,5 +158,12 @@ def create_app(test_config=None):
   Create error handlers for all expected errors
   including 404 and 422.
   '''
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      "success": False,
+      "error": 404,
+      "message": "resource not found"
+      }), 404
 
   return app
