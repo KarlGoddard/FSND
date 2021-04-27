@@ -55,15 +55,16 @@ def create_app(test_config=None):
     if len(current_questions) == 0:
       abort(404)
 
-    # categories = {1:'Science',2:'Art',3:'Geography'}
-    categories = {1:'Science'}
+    # allcats = {1:'Science'}
+    cats = Category.query.order_by(Category.id).all()
+    allcategories = {cat.id:cat.type for cat in cats}
 
-    return jsonify({
+    return jsonify ({
       'success': True,
       'questions': current_questions,
       'total_questions': len(Question.query.all()),
-      'current_category' : {1:'Sport'},
-      'categories' : categories
+      'current_category' : None,
+      'categories' : allcategories
     })
 
   '''
@@ -88,14 +89,20 @@ def create_app(test_config=None):
         abort(404)
 
       question.delete()
-      selection = Question.query.order_by(Question.id).all()
-      current_questions = paginate_books(request, selection)
+
+      questions = Question.query.order_by(Question.id).all()
+      current_questions = paginate_books(request, questions)
+
+      cats = Category.query.order_by(Category.id).all()
+      allcategories = {cat.id:cat.type for cat in cats}
 
       return jsonify({
         'success': True,
         'deleted': question_id,
         'questions': current_questions,
-        'total_questions': len(Question.query.all())
+        'total_questions': len(Question.query.all()),
+        'current_category' : None,
+        'categories' : allcategories
       })
 
     except:
