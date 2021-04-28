@@ -68,7 +68,7 @@ def create_app(test_config=None):
     })
 
   '''
-  @TODO:
+  @DONE:
   Create an endpoint to handle GET requests for questions,
   including pagination (every 10 questions).
   This endpoint should return a list of questions,
@@ -109,12 +109,57 @@ def create_app(test_config=None):
       abort(422)
 
   '''
-  @TODO:
+  @DONE:
   Create an endpoint to DELETE question using a question ID.
 
   TEST: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page.
   '''
+
+  @app.route('/add', methods=['POST'])
+  def add_question(question_id):
+    body = request.get_json()
+
+    new_question = body.get('question', None)
+    new_answer = body.get('answer', None)
+    new_difficulty = body.get('difficulty', None)
+    new_category = body.get('category', None)
+
+    try:
+      question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
+      question.insert()
+
+      questions = Question.query.order_by(Question.id).all()
+      current_questions = paginate_questions(request, questions)
+
+      cats = Category.query.order_by(Category.id).all()
+      allcategories = {cat.id:cat.type for cat in cats}
+
+      # return jsonify ({
+      #     'success': True,
+      #     'question_id': question.id,
+      #     'question_created': question.question,
+      #     'questions': current_questions,
+      #     'total_questions': len(Question.query.all()),
+      #     'categories' : allcategories
+      # })
+
+      return jsonify ({
+          'success': True,
+          'message': "Success"
+      })
+
+      # return jsonify ({
+      #     'success': True,
+      #     'question_id': question.id,
+      #     'questions': current_questions,
+      #     'total_questions': len(Question.query.all()),
+      #     'categories' : allcategories
+      # })
+
+
+    except:
+      abort(404)
 
   '''
   @TODO:
@@ -166,6 +211,14 @@ def create_app(test_config=None):
   including 404 and 422.
   '''
   @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      "success": False,
+      "error": 404,
+      "message": "resource not found"
+      }), 404
+
+  @app.errorhandler(422)
   def not_found(error):
     return jsonify({
       "success": False,
