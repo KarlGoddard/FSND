@@ -116,17 +116,18 @@ def create_app(test_config=None):
   This removal will persist in the database and when you refresh the page.
   '''
 
-  @app.route('/add', methods=['POST'])
-  def add_question(question_id):
+  @app.route('/questions', methods=['POST'])
+  def add_question():
     body = request.get_json()
 
-    new_question = body.get('question', None)
-    new_answer = body.get('answer', None)
-    new_difficulty = body.get('difficulty', None)
-    new_category = body.get('category', None)
+    new_question = body.get('question',None)
+    new_answer = body.get('answer',None)
+    new_difficulty = body.get('difficulty',None)
+    new_category = body.get('category',None)
 
     try:
-      question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
+      question = Question(question=new_question, answer=new_answer, difficulty=new_difficulty, category=new_category)
+      # question = Question(question, answer, category, difficulty)
       question.insert()
 
       questions = Question.query.order_by(Question.id).all()
@@ -135,31 +136,19 @@ def create_app(test_config=None):
       cats = Category.query.order_by(Category.id).all()
       allcategories = {cat.id:cat.type for cat in cats}
 
-      # return jsonify ({
-      #     'success': True,
-      #     'question_id': question.id,
-      #     'question_created': question.question,
-      #     'questions': current_questions,
-      #     'total_questions': len(Question.query.all()),
-      #     'categories' : allcategories
-      # })
-
       return jsonify ({
           'success': True,
-          'message': "Success"
+          'question_id': question.id,
+          'question_created': question.question,
+          'questions': current_questions,
+          'total_questions': len(Question.query.all()),
+          'category' : allcategories
       })
-
-      # return jsonify ({
-      #     'success': True,
-      #     'question_id': question.id,
-      #     'questions': current_questions,
-      #     'total_questions': len(Question.query.all()),
-      #     'categories' : allcategories
-      # })
-
 
     except:
       abort(404)
+
+
 
   '''
   @TODO:
