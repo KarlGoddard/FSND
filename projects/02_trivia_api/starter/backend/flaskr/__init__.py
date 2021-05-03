@@ -168,16 +168,17 @@ def create_app(test_config=None):
       search = body.get('searchTerm',None)
 
       try:
-        searchResult = Question.query.filter(Question.question.ilike('%{}%'.format(search)))
+        searchResult = Question.query.filter(Question.question.ilike('%{search}%'.all()
         # selection = Book.query.order_by(Book.id).filter(Book.title.ilike('%{}%'.format(search)))
 
         questions = []
-        for i in searched_question:
+        for i in searchResult:
             questions.append(i.format())
 
         return jsonify ({
           'success': True
-          # 'question_id': question.id,
+          'questions': questions
+          'total_questions': len(searchResult)
           # 'question_created': question.question,
           # 'questions': current_questions,
           # 'total_questions': len(Question.query.all()),
