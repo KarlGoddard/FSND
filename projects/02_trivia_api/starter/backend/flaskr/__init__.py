@@ -91,7 +91,7 @@ def create_app(test_config=None):
       question.delete()
 
       questions = Question.query.order_by(Question.id).all()
-      current_questions = paginate_books(request, questions)
+      current_questions = paginate_questions(request, questions)
 
       cats = Category.query.order_by(Category.id).all()
       allcategories = {cat.id:cat.type for cat in cats}
@@ -161,30 +161,28 @@ def create_app(test_config=None):
   of the questions list in the "List" tab.
   '''
 
-    @app.route('/questions/search', methods=['POST'])
-    def search_questions():
-      body = request.get_json()
+  @app.route('/questions/search', methods=['POST'])
+  def search_questions():
 
-      search = body.get('searchTerm',None)
+    body = request.get_json()
+    search = body.get('searchTerm', None)
 
+    if search:
       try:
-        searchResult = Question.query.filter(Question.question.ilike('%{search}%'.all()
-        # selection = Book.query.order_by(Book.id).filter(Book.title.ilike('%{}%'.format(search)))
+          searchResult = Question.query.filter(Question.question.ilike(f'%{search}%')).all()
+#         # selection = Book.query.order_by(Book.id).filter(Book.title.ilike('%{}%'.format(search)))
+#
+          questions = []
+          for i in searchResult:
+              questions.append(i.format())
 
-        questions = []
-        for i in searchResult:
-            questions.append(i.format())
-
-        return jsonify ({
-          'success': True
-          'questions': questions
-          'total_questions': len(searchResult)
-          # 'question_created': question.question,
-          # 'questions': current_questions,
-          # 'total_questions': len(Question.query.all()),
-          # 'category' : allcategories
-        })
-
+          return jsonify ({
+            'success' : True,
+            'questions' : questions,
+            'total_questions' : len(searchResult),
+            'current_category' : None
+          })
+#
       except:
         abort(404)
 
@@ -198,6 +196,23 @@ def create_app(test_config=None):
   only question that include that string within their question.
   Try using the word "title" to start.
   '''
+
+    @app.route('/categories/<int:category>/questions', methods=['GET'])
+    def get_categoryquestions():
+
+    try:
+      questions = Question.query.filter(Question.category == category.id).all()
+      cat_questions = paginate_questions(request, questions)
+
+      return jsonify({
+        'success': True,
+        'questions': questions,
+        'total_questions': len(questions),
+        'current_category' : None
+      })
+
+    except:
+      abort(422)
 
   '''
   @TODO:
