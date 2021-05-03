@@ -151,7 +151,7 @@ def create_app(test_config=None):
 
 
   '''
-  @TODO:
+  @DONE
   Create an endpoint to POST a new question,
   which will require the question and answer text,
   category, and difficulty score.
@@ -160,6 +160,32 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.
   '''
+
+    @app.route('/questions/search', methods=['POST'])
+    def search_questions():
+      body = request.get_json()
+
+      search = body.get('searchTerm',None)
+
+      try:
+        searchResult = Question.query.filter(Question.question.ilike('%{}%'.format(search)))
+        # selection = Book.query.order_by(Book.id).filter(Book.title.ilike('%{}%'.format(search)))
+
+        questions = []
+        for i in searched_question:
+            questions.append(i.format())
+
+        return jsonify ({
+          'success': True
+          # 'question_id': question.id,
+          # 'question_created': question.question,
+          # 'questions': current_questions,
+          # 'total_questions': len(Question.query.all()),
+          # 'category' : allcategories
+        })
+
+      except:
+        abort(404)
 
   '''
   @TODO:
@@ -199,6 +225,15 @@ def create_app(test_config=None):
   Create error handlers for all expected errors
   including 404 and 422.
   '''
+
+  @app.errorhandler(400)
+  def bad_request(error):
+    return jsonify({
+      "success": False,
+      "error": 400,
+      "message": "bad request"
+      }), 400
+
   @app.errorhandler(404)
   def not_found(error):
     return jsonify({
@@ -207,12 +242,20 @@ def create_app(test_config=None):
       "message": "resource not found"
       }), 404
 
-  @app.errorhandler(422)
+  @app.errorhandler(405)
   def not_found(error):
     return jsonify({
       "success": False,
-      "error": 404,
-      "message": "resource not found"
-      }), 404
+      "error": 405,
+      "message": "method not allowed"
+      }), 405
+
+  @app.errorhandler(422)
+  def unprocessable(error):
+    return jsonify({
+      "success": False,
+      "error": 422,
+      "message": "unprocessable"
+      }), 422
 
   return app
