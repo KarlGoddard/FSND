@@ -199,22 +199,38 @@ def create_app(test_config=None):
   Try using the word "title" to start.
   '''
 
-    # @app.route('/categories/<int:category>/questions', methods=['GET'])
-    # def get_categoryquestions():
-    #
-    # try:
-    #   questions = Question.query.filter(Question.category == category.id).all()
-    #   cat_questions = paginate_questions(request, questions)
-    #
-    #   return jsonify({
-    #     'success': True,
-    #     'questions': questions,
-    #     'total_questions': len(questions),
-    #     'current_category' : None
-    #   })
-    #
-    # except:
-    #   abort(422)
+  @app.route('/categories/<int:category_id>/questions', methods=['GET'])
+  def get_categoryquestions(category_id):
+    try:
+      cat_questions = Question.query.filter(Question.category == str(category_id)).all()
+
+      questions = []
+      for question in cat_questions:
+        questions.append(question.format())
+
+      return jsonify({
+            'success': True,
+            'questions': questions,
+            'total_questions': len(cat_questions),
+            'current_category': category_id
+        })
+
+    except:
+      abort(422)
+
+  # @app.route('/categories/<int:category_id>/questions', methods=['GET'])
+  # def get_the_question_by_category(category_id):
+  #   try:
+  #     questions = Question.query.filter(Question.category == str(category_id)).all()
+  #
+  #     return jsonify({
+  #             'success': True,
+  #             'questions': [question.format() for question in questions],
+  #             'total_questions': len(questions),
+  #             'current_category': category_id
+  #         })
+  #   except:
+  #     abort(404)
 
   '''
   @TODO:
