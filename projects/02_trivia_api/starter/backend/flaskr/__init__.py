@@ -173,8 +173,9 @@ def create_app(test_config=None):
 #         # selection = Book.query.order_by(Book.id).filter(Book.title.ilike('%{}%'.format(search)))
 #
           questions = []
-          for i in searchResult:
-              questions.append(i.format())
+          for question in searchResult:
+             questions.append(question.format())
+
 
           return jsonify ({
             'success' : True,
@@ -182,9 +183,10 @@ def create_app(test_config=None):
             'total_questions' : len(searchResult),
             'current_category' : None
           })
-#
+
       except:
         abort(404)
+
 
   '''
   @TODO:
@@ -197,22 +199,22 @@ def create_app(test_config=None):
   Try using the word "title" to start.
   '''
 
-    @app.route('/categories/<int:category>/questions', methods=['GET'])
-    def get_categoryquestions():
-
-    try:
-      questions = Question.query.filter(Question.category == category.id).all()
-      cat_questions = paginate_questions(request, questions)
-
-      return jsonify({
-        'success': True,
-        'questions': questions,
-        'total_questions': len(questions),
-        'current_category' : None
-      })
-
-    except:
-      abort(422)
+    # @app.route('/categories/<int:category>/questions', methods=['GET'])
+    # def get_categoryquestions():
+    #
+    # try:
+    #   questions = Question.query.filter(Question.category == category.id).all()
+    #   cat_questions = paginate_questions(request, questions)
+    #
+    #   return jsonify({
+    #     'success': True,
+    #     'questions': questions,
+    #     'total_questions': len(questions),
+    #     'current_category' : None
+    #   })
+    #
+    # except:
+    #   abort(422)
 
   '''
   @TODO:
