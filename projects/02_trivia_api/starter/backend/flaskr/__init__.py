@@ -229,8 +229,21 @@ def create_app(test_config=None):
 
   @app.route('/quizzes', methods=['POST'])
   def make_quiz():
-    body = request.get_json()
+    data = request.get_json() # get info passed
+
+      # data: JSON.stringify({
+      #   previous_questions: previousQuestions,
+      #   quiz_category: this.state.quizCategory
+    prev_questions = data['previous_questions']
+    category = data['quiz_category']
+
+    # if cat is not 0
+    #     questions = Question.query.filter_by(question.category=category['id']).all()
+    # else
+    #     questions = Question.query.all()
     #
+    # get random choice from questions?
+
     # new_question = body.get('question',None)
     # new_answer = body.get('answer',None)
     # new_difficulty = body.get('difficulty',None)
