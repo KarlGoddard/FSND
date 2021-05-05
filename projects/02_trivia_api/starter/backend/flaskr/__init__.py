@@ -218,20 +218,6 @@ def create_app(test_config=None):
     except:
       abort(422)
 
-  # @app.route('/categories/<int:category_id>/questions', methods=['GET'])
-  # def get_the_question_by_category(category_id):
-  #   try:
-  #     questions = Question.query.filter(Question.category == str(category_id)).all()
-  #
-  #     return jsonify({
-  #             'success': True,
-  #             'questions': [question.format() for question in questions],
-  #             'total_questions': len(questions),
-  #             'current_category': category_id
-  #         })
-  #   except:
-  #     abort(404)
-
   '''
   @TODO:
   Create a GET endpoint to get questions based on category.
@@ -241,6 +227,43 @@ def create_app(test_config=None):
   category to be shown.
   '''
 
+  @app.route('/quizzes', methods=['POST'])
+  def make_quiz():
+    body = request.get_json()
+    #
+    # new_question = body.get('question',None)
+    # new_answer = body.get('answer',None)
+    # new_difficulty = body.get('difficulty',None)
+    # new_category = body.get('category',None)
+    #
+    # try:
+    #   question = Question(question=new_question, answer=new_answer, difficulty=new_difficulty, category=new_category)
+    #   # question = Question(question, answer, category, difficulty)
+    #   question.insert()
+    #
+    #   questions = Question.query.order_by(Question.id).all()
+    #   current_questions = paginate_questions(request, questions)
+    #
+    #   cats = Category.query.order_by(Category.id).all()
+    #   allcategories = {cat.id:cat.type for cat in cats}
+    #
+    #   return jsonify ({
+    #       'success': True,
+    #       'question_id': question.id,
+    #       'question_created': question.question,
+    #       'questions': current_questions,
+    #       'total_questions': len(Question.query.all()),
+    #       'category' : allcategories
+    #   })
+
+  # showAnswer: false,
+  # previousQuestions: previousQuestions,
+  # currentQuestion: result.question,
+  # guess: '',
+  # forceEnd: result.question ? false : true
+
+    except:
+      abort(404)
 
   '''
   @TODO:
