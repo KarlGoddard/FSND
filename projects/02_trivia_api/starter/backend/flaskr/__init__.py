@@ -229,36 +229,21 @@ def create_app(test_config=None):
 
   @app.route('/quizzes', methods=['POST'])
   def make_quiz():
-    data = request.get_json() # get info passed
-
+    body = request.get_json() # get info passed
       # data: JSON.stringify({
       #   previous_questions: previousQuestions,
       #   quiz_category: this.state.quizCategory
-    prev_questions = data['previous_questions']
-    category = data['quiz_category']
+    prev_questions = body.get('previous_questions', None)
+    category = body.get('quiz_category', None)
 
-    # if cat is not 0
-    #     questions = Question.query.filter_by(question.category=category['id']).all()
-    # else
-    #     questions = Question.query.all()
-    #
-    # get random choice from questions?
+    try:
 
-    # new_question = body.get('question',None)
-    # new_answer = body.get('answer',None)
-    # new_difficulty = body.get('difficulty',None)
-    # new_category = body.get('category',None)
-    #
-    # try:
-    #   question = Question(question=new_question, answer=new_answer, difficulty=new_difficulty, category=new_category)
-    #   # question = Question(question, answer, category, difficulty)
-    #   question.insert()
-    #
-    #   questions = Question.query.order_by(Question.id).all()
-    #   current_questions = paginate_questions(request, questions)
-    #
-    #   cats = Category.query.order_by(Category.id).all()
-    #   allcategories = {cat.id:cat.type for cat in cats}
+        if category['id'] != 0:
+            questionSet = Question.query.filter_by(question.category=category['id']).all()
+        else
+            questionSet = Question.query.all()
+        # get random choice from questions?
+
     #
     #   return jsonify ({
     #       'success': True,
