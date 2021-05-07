@@ -244,21 +244,22 @@ def create_app(test_config=None):
             questionSet = Question.query.all()
         # get random choice from questions?
 
-    #
-    #   return jsonify ({
-    #       'success': True,
-    #       'question_id': question.id,
-    #       'question_created': question.question,
-    #       'questions': current_questions,
-    #       'total_questions': len(Question.query.all()),
-    #       'category' : allcategories
-    #   })
+        QuestionsAvailable = []
+        for question in QuestionSet:
+            if question['id'] not in prev_questions
+                QuestionsAvailable.append(question.format())
 
-  # showAnswer: false,
-  # previousQuestions: previousQuestions,
-  # currentQuestion: result.question,
-  # guess: '',
-  # forceEnd: result.question ? false : true
+        if QuestionsAvailable:
+            # RandomQuestion - get random choice from questions?
+            return jsonify({
+                'success': True,
+                'question': randomQuestion
+            })
+        else
+            return jsonify({
+                'success': False,
+                'question': None
+            })
 
     except:
       abort(404)
