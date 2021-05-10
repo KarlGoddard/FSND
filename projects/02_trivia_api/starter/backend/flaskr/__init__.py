@@ -239,23 +239,23 @@ def create_app(test_config=None):
     try:
 
         if category['id'] != 0:
-            questionSet = Question.query.filter_by(question.category=category['id']).all()
-        else
+            questionSet = Question.query.filter_by(Question.category == category['id']).all()
+        else:
             questionSet = Question.query.all()
         # get random choice from questions?
 
         QuestionsAvailable = []
         for question in QuestionSet:
-            if question['id'] not in prev_questions
-                QuestionsAvailable.append(question.format())
+            if question['id'] not in prev_questions:
+                QuestionsAvailable.append(question).format()
 
         if QuestionsAvailable:
-            # RandomQuestion - get random choice from questions?
+            randomQuestion = random.choice(QuestionsAvailable).format()
             return jsonify({
                 'success': True,
                 'question': randomQuestion
             })
-        else
+        else:
             return jsonify({
                 'success': False,
                 'question': None
