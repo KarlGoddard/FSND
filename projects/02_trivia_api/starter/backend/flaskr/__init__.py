@@ -229,37 +229,37 @@ def create_app(test_config=None):
 
   @app.route('/quizzes', methods=['POST'])
   def make_quiz():
-    body = request.get_json() # get info passed
-      # data: JSON.stringify({
-      #   previous_questions: previousQuestions,
-      #   quiz_category: this.state.quizCategory
+    body = request.get_json()
+  #     # data: JSON.stringify({
+  #     #   previous_questions: previousQuestions,
+  #     #   quiz_category: this.state.quizCategory
     prev_questions = body.get('previous_questions', None)
     category = body.get('quiz_category', None)
 
     try:
 
         if category['id'] != 0:
-            questionSet = Question.query.filter_by(Question.category == category['id']).all()
+            questionSet = Question.query.filter_by(category = category['id']).all()
         else:
             questionSet = Question.query.all()
-        # get random choice from questions?
 
-        QuestionsAvailable = []
-        for question in QuestionSet:
-            if question['id'] not in prev_questions:
-                QuestionsAvailable.append(question).format()
+        questionsAvailable = []
 
-        if QuestionsAvailable:
-            randomQuestion = random.choice(QuestionsAvailable).format()
+        for question in questionSet:
+            if question.id not in prev_questions:
+                questionsAvailable.append(question.format())
+
+        if len(questionsAvailable) > 0:
+            randomQuestion = random.choice(questionsAvailable)
             return jsonify({
                 'success': True,
                 'question': randomQuestion
-            })
+              })
         else:
             return jsonify({
                 'success': False,
                 'question': None
-            })
+              })
 
     except:
       abort(404)
