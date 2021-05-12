@@ -59,9 +59,24 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['message'], 'unprocessable')
 
-    # def test_add
-    # def test_search
-    # def test_quiz
+
+        
+
+    def test_add_new_question(self):
+        res = self.client().post('/questions')
+        data = json.loads(res.data)
+
+    def test_search(self):
+        res = self.client().post('/questions/search')
+        data = json.loads(res.data)
+
+    def test_questions_by_category(self):
+        res = self.client().get('/categories/1/questions')
+        data = json.loads(res.data)
+
+    def test_quiz(self):
+        res = self.client().post('/quizzes')
+        data = json.loads(res.data)
 
     """
     TODO
