@@ -27,6 +27,21 @@ class TriviaTestCase(unittest.TestCase):
             # create all tables
             self.db.create_all()
 
+    # new_question = body.get('question',None)
+    # new_answer = body.get('answer',None)
+    # new_difficulty = body.get('difficulty',None)
+    # new_category = body.get('category',None)
+        self.add_question = {
+            'question':"New Question",
+            'answer':"New Answer",
+            'difficulty': 3,
+            'category': 1
+        }
+
+        self.searchItem = {
+            'searchTerm':"Title"
+        }
+
     def tearDown(self):
         """Executed after reach test"""
         pass
@@ -59,24 +74,29 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['message'], 'unprocessable')
 
-
-        
-
     def test_add_new_question(self):
-        res = self.client().post('/questions')
+        res = self.client().post('/questions', json=self.add_question)
         data = json.loads(res.data)
 
-    def test_search(self):
-        res = self.client().post('/questions/search')
-        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question_id'])
 
-    def test_questions_by_category(self):
-        res = self.client().get('/categories/1/questions')
-        data = json.loads(res.data)
+    # def test_search(self):
+    #     res = self.client().post('/questions/search')
+    #     data = json.loads(res.data, json=self.searchItem)
+    #
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data['success'], True)
 
-    def test_quiz(self):
-        res = self.client().post('/quizzes')
-        data = json.loads(res.data)
+    #
+    # def test_questions_by_category(self):
+    #     res = self.client().get('/categories/1/questions')
+    #     data = json.loads(res.data)
+    #
+    # def test_quiz(self):
+    #     res = self.client().post('/quizzes')
+    #     data = json.loads(res.data)
 
     """
     TODO
