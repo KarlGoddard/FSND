@@ -38,8 +38,27 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
-    # def test_questions
-    # def test_delete
+    def test_questions(self):
+        res = self.client().get('/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+
+    # def test_delete(self):
+    #     res = self.client().delete('/questions/6')
+    #     data = json.loads(res.data)
+    #
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data['success'], True)
+
+    def test_delete_beyond_valid_question_number(self):
+        res = self.client().delete('/questions/5000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['message'], 'unprocessable')
+
     # def test_add
     # def test_search
     # def test_quiz
