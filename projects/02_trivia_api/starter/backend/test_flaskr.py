@@ -24,11 +24,18 @@ class TriviaTestCase(unittest.TestCase):
             self.db.init_app(self.app)
             # create all tables
             self.db.create_all()
-    
+
     def tearDown(self):
         """Executed after reach test"""
         pass
 
+    def test_categories
+    def test_questions
+    def test_delete
+    def test_add
+    def test_search
+    def test_quiz
+    
     """
     TODO
     Write at least one test for each test for successful operation and for expected errors.
