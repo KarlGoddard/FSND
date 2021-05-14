@@ -47,8 +47,19 @@ class TriviaTestCase(unittest.TestCase):
         }
 
         self.quizInfo = {
-            'quiz_category':'XYZ99',
-            'previous_questions':'aaa'
+            'quiz_category':{
+                'type':'Sport',
+                'id': 1
+                },
+            'previous_questions':[1,2]
+        }
+
+        self.quizInfoNone = {
+            'quiz_category':{
+                'type':'Sport',
+                'id': 999
+                },
+            'previous_questions': [1,2]
         }
 
     def tearDown(self):
@@ -112,8 +123,18 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
 
     def test_quiz(self):
-        res = self.client().post('/quizzes')
+        res = self.client().post('/quizzes', json=self.quizInfo)
         data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+
+    def test_quiz_complete(self):
+        res = self.client().post('/quizzes', json=self.quizInfoNone)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], False)
 
     """
     TODO
