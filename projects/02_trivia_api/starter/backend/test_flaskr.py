@@ -38,8 +38,17 @@ class TriviaTestCase(unittest.TestCase):
             'category': 1
         }
 
-        self.searchItem = {
-            'searchTerm':"Title"
+        self.searchItemFind = {
+            'searchTerm':'Title'
+        }
+
+        self.searchItemNotFind = {
+            'searchTerm':'XYZ99'
+        }
+
+        self.quizInfo = {
+            'quiz_category':'XYZ99',
+            'previous_questions':'aaa'
         }
 
     def tearDown(self):
@@ -82,21 +91,29 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['question_id'])
 
-    # def test_search(self):
-    #     res = self.client().post('/questions/search')
-    #     data = json.loads(res.data, json=self.searchItem)
-    #
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data['success'], True)
+    def test_search(self):
+        res = self.client().post('/questions/search', json=self.searchItemFind)
+        data = json.loads(res.data)
 
-    #
-    # def test_questions_by_category(self):
-    #     res = self.client().get('/categories/1/questions')
-    #     data = json.loads(res.data)
-    #
-    # def test_quiz(self):
-    #     res = self.client().post('/quizzes')
-    #     data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+
+    def test_search_not_present(self):
+        res = self.client().post('/questions/search', json=self.searchItemNotFind)
+        data = json.loads(res.data)
+
+        self.assertEqual(data['total_questions'], False)
+
+    def test_questions_by_category(self):
+        res = self.client().get('/categories/1/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+
+    def test_quiz(self):
+        res = self.client().post('/quizzes')
+        data = json.loads(res.data)
 
     """
     TODO
