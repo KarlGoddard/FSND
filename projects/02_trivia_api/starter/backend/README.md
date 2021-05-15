@@ -109,7 +109,6 @@ POST '/questions/search'
 - Request Arguments: search term
 - Returns: An object with a questions that match the search and count of the matches.
 
-
 GET '/categories/<category_id>/questions'
 - Fetches questions where the question category matches the selected category.
 - Request Arguments: category_id
@@ -122,9 +121,8 @@ POST '/quizzes'
 
 ## Testing
 To run the tests, run
-```
+
 dropdb trivia_test
 createdb trivia_test
 psql trivia_test < trivia.psql
 python test_flaskr.py
-```
