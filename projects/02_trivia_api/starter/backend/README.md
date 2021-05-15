@@ -67,10 +67,9 @@ One note before you delve into your tasks: for each endpoint you are expected to
 9. Create error handlers for all expected errors including 400, 404, 422 and 500.
 
 REVIEW_COMMENT
-```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code.
 
-Endpoints
+## Endpoints
+
 GET '/categories'
 GET '/questions'
 DELETE '/questions/<question_id>'
@@ -90,8 +89,36 @@ GET '/categories'
 '5' : "Entertainment",
 '6' : "Sports"}
 
-```
+GET '/questions'
+- Fetches a questions sorted by question ids
+- Request Arguments: None
+- Returns: An object with a questions, question count and categories.
 
+DELETE '/questions/<question_id>'
+- Deletes a question based the selected question id.
+- Request Arguments: question_id
+- Returns: An object with deleted question_id, remaining questions, question count and categories.
+
+POST '/questions'
+- Adds a new question that is assigned an incremental id.
+- Request Arguments: json object containing question, answer, difficulty (1-4) and category name.
+- Returns: An object with confirmation of the new question_id, the new question, updated question list, question count and categories.
+
+POST '/questions/search'
+- Fetches questions based on a search term, where the search term matches any substring of the question.
+- Request Arguments: search term
+- Returns: An object with a questions that match the search and count of the matches.
+
+
+GET '/categories/<category_id>/questions'
+- Fetches questions where the question category matches the selected category.
+- Request Arguments: category_id
+- Returns: An object with a questions in the category, question count and the category id.
+
+POST '/quizzes'
+- Takes the category and previous question parameters provided, to return a question that matches the selected category and has not already been answered.  While there is more than one question available, the next question to be asked is chosen randomly.
+- Request Arguments: previous_questions, quiz_category
+- Returns: While there is at least one question remaining in the category that has not already been asked, it returns an object with the next question to be asked.
 
 ## Testing
 To run the tests, run
