@@ -35,16 +35,17 @@ def create_app(test_config=None):
 
   @app.route('/categories')
   def retrieve_categories():
-    cats = Category.query.all()
-    allcats = {cat.id:cat.type for cat in cats}
+    try:
+        cats = Category.query.all()
+        allcats = {cat.id:cat.type for cat in cats}
 
-    # if len(current_books) == 0:
-    #   abort(404)
-
-    return jsonify ({
-        'success': True,
-        'categories' : allcats
-    })
+        return jsonify ({
+            'success': True,
+            'categories' : allcats
+        })
+    except Exception as e:
+        print(e)
+        abort(422)
 
   # Endpoint to handle GET requests for questions, includes pagination (every 10 questions).
   # Return a list of questions, number of total questions, current category, categories.
