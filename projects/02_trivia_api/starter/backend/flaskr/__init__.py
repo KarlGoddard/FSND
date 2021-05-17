@@ -39,6 +39,9 @@ def create_app(test_config=None):
         cats = Category.query.all()
         allcats = {cat.id:cat.type for cat in cats}
 
+        if len(cats) == 0:
+          abort(404)
+
         return jsonify ({
             'success': True,
             'categories' : allcats
@@ -52,22 +55,26 @@ def create_app(test_config=None):
 
   @app.route('/questions')
   def retrieve_questions():
-    questions = Question.query.order_by(Question.id).all()
-    current_questions = paginate_questions(request, questions)
+    try:
+        questions = Question.query.order_by(Question.id).all()
+        current_questions = paginate_questions(request, questions)
 
-    if len(current_questions) == 0:
-      abort(404)
+        if len(current_questions) == 0:
+          abort(404)
 
-    cats = Category.query.order_by(Category.id).all()
-    allcategories = {cat.id:cat.type for cat in cats}
+        cats = Category.query.order_by(Category.id).all()
+        allcategories = {cat.id:cat.type for cat in cats}
 
-    return jsonify ({
-      'success': True,
-      'questions': current_questions,
-      'total_questions': len(Question.query.all()),
-      'current_category' : None,
-      'categories' : allcategories
-    })
+        return jsonify ({
+          'success': True,
+          'questions': current_questions,
+          'total_questions': len(Question.query.all()),
+          'current_category' : None,
+          'categories' : allcategories
+        })
+    except Exception as e:
+        print(e)
+        abort(422)
 
   # Endpoint to DELETE question using a question ID
 
@@ -96,8 +103,10 @@ def create_app(test_config=None):
         'categories' : allcategories
       })
 
-    except:
-      abort(422)
+    except Exception as e:
+        print(e)
+        abort(422)
+
 
   # Endpoint to POST a new question, which will require the question and
   # answer text, category, and difficulty score.
@@ -130,8 +139,10 @@ def create_app(test_config=None):
           'category' : allcategories
       })
 
-    except:
-      abort(404)
+    except Exception as e:
+        print(e)
+        abort(404)
+
 
   # Endpoint to get questions based on a search term, returns any questions
   # for which the search term is a substring of the question.
@@ -158,8 +169,10 @@ def create_app(test_config=None):
             'current_category' : None
           })
 
-      except:
-        abort(404)
+      except Exception as e:
+            print(e)
+            abort(404)
+
 
   # Endpoint to get questions based on category id.
 
@@ -179,8 +192,9 @@ def create_app(test_config=None):
             'current_category': category_id
         })
 
-    except:
-      abort(422)
+    except Exception as e:
+        print(e)
+        abort(422)
 
   # Dndpoint to get questions to play the quiz.  This endpoint takes category and previous question parameters
   # and returns a random questions within the given category, if provided, and not one of the previous questions.
@@ -216,8 +230,10 @@ def create_app(test_config=None):
                 'question': None
               })
 
-    except:
-      abort(404)
+    except Exception as e:
+        print(e)
+        abort(404)
+
 
   # Error handlers for all expected errors
 
