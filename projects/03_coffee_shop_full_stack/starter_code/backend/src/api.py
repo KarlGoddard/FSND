@@ -17,7 +17,7 @@ CORS(app)
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this funciton will add one
 '''
-# db_drop_and_create_all()
+db_drop_and_create_all()
 
 # ROUTES
 '''
@@ -28,6 +28,23 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+
+@app.route('/drinks', methods=['GET'])
+def get_drinks():
+try:
+    drinks = Drinks.query.all()
+    get_drinklist = {dk.id:dk.title:dk.recipe for dk in drinks}
+
+    if len(get_drinklist) == 0:
+      abort(404)
+
+    return jsonify ({
+        'success': True,
+        'categories' : get_drinklist
+    })
+except Exception as e:
+    print(e)
+    abort(422)
 
 
 '''
