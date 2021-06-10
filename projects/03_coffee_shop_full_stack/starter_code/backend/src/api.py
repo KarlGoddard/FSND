@@ -31,18 +31,21 @@ db_drop_and_create_all()
 
 @app.route('/drinks', methods=['GET'])
 def get_drinks():
-try:
-    drinks = Drinks.query.all()
-    get_drinklist = {dk.id:dk.title:dk.recipe for dk in drinks}
+  try:
+    drinks = Drink.query.all()
+
+    get_drinklist = []
+    for dk in drinks:
+        get_drinklist.append(dk.short())
 
     if len(get_drinklist) == 0:
       abort(404)
 
     return jsonify ({
         'success': True,
-        'categories' : get_drinklist
+        'drinks' : get_drinklist
     })
-except Exception as e:
+  except Exception as e:
     print(e)
     abort(422)
 
