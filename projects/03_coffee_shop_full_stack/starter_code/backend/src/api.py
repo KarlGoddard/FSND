@@ -135,13 +135,14 @@ def get_drinks_detail(jwt):
     req_title = body.get('title',None)
     req_recipe = body.get('recipe',None)
 
-    drink = Question.query.filter_by(category = category['id']).all()
+    drink = Drink.query.filter(Drink.id == req_id).one_or_none()
 
     if drink == 0:
         abort(404)
     else:
       try:
-        drink = Drink(title=req_title, recipe=req_recipe)
+        drink.title = req_title
+        drink.recipe = req_recipe
         drink.update()
 
         return jsonify ({
@@ -164,6 +165,29 @@ def get_drinks_detail(jwt):
         or appropriate status code indicating reason for failure
 '''
 
+@app.route('/drinks'/id, methods=['DELETE'])
+@requires_auth('delete:drinks')
+def get_drinks_detail(jwt):
+    body = request.get_json()
+
+    req_id = body.get('id',None)
+
+    drink = Drink.query.filter(Drink.id == req_id).one_or_none()
+
+    if drink == 0:
+        abort(404)
+    else:
+      try:
+        drink.delete()
+
+        return jsonify ({
+            'success': True,
+            'drinks' : drink.long()
+        })
+
+      except Exception as e:
+        print(e)
+        abort(422)
 
 # Error Handling
 '''
