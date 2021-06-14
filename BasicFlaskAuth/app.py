@@ -117,8 +117,8 @@ def requires_auth(f):
 
     return wrapper
 
-@app.route('/headers')
-@requires_auth
-def headers(payload):
-    print(payload)
-    return 'Access Granted'
+# @app.route('/headers')
+# @requires_auth
+# def headers(payload):
+#     print(payload)
+#     return 'Access Granted'
