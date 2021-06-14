@@ -131,18 +131,19 @@ def get_drinks_detail(jwt):
 def get_drinks_detail(jwt):
     body = request.get_json()
 
-    req_id = body.get('id',None)
     req_title = body.get('title',None)
     req_recipe = body.get('recipe',None)
 
-    drink = Drink.query.filter(Drink.id == req_id).one_or_none()
+    drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
     if drink == 0:
         abort(404)
     else:
       try:
-        drink.title = req_title
-        drink.recipe = req_recipe
+        if req_title:
+            drink.title = req_title
+        if req_recipe:
+            drink.recipe = req_recipe
         drink.update()
 
         return jsonify ({
