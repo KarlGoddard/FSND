@@ -214,3 +214,14 @@ def unprocessable(error):
 @TODO implement error handler for AuthError
     error handler should conform to general task above
 '''
+@app.errorhandler(AuthError)
+def auth_error(error):
+    return jsonify({
+        "success": False,
+        "error": error.description
+    }), error.status_code
+
+    # raise AuthError({
+    #             'code': 'invalid_header',
+    #             'description': 'Unable to find the appropriate key.'
+    #         }, 400)
