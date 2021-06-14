@@ -105,9 +105,6 @@ def get_drinks_detail(jwt):
         drink = Drink(title=req_title, recipe=req_recipe)
         drink.insert()
 
-        if  != 0:
-          abort(404)
-
         return jsonify ({
             'success': True,
             'drinks' : drink.long()
@@ -129,6 +126,32 @@ def get_drinks_detail(jwt):
         or appropriate status code indicating reason for failure
 '''
 
+@app.route('/drinks'/id, methods=['PATCH'])
+@requires_auth('patch:drinks')
+def get_drinks_detail(jwt):
+    body = request.get_json()
+
+    req_id = body.get('id',None)
+    req_title = body.get('title',None)
+    req_recipe = body.get('recipe',None)
+
+    drink = Question.query.filter_by(category = category['id']).all()
+
+    if drink == 0:
+        abort(404)
+    else:
+      try:
+        drink = Drink(title=req_title, recipe=req_recipe)
+        drink.update()
+
+        return jsonify ({
+            'success': True,
+            'drinks' : drink.long()
+        })
+
+      except Exception as e:
+        print(e)
+        abort(422)
 
 '''
 @TODO implement endpoint
