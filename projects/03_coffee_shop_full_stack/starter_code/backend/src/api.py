@@ -126,7 +126,7 @@ def get_drinks_detail(jwt):
         or appropriate status code indicating reason for failure
 '''
 
-@app.route('/drinks'/id, methods=['PATCH'])
+@app.route('/drinks/<int:drink_id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
 def get_drinks_detail(jwt):
     body = request.get_json()
@@ -165,14 +165,11 @@ def get_drinks_detail(jwt):
         or appropriate status code indicating reason for failure
 '''
 
-@app.route('/drinks'/id, methods=['DELETE'])
+@app.route('/drinks/<int:drink_id>', methods=['DELETE'])
 @requires_auth('delete:drinks')
 def get_drinks_detail(jwt):
-    body = request.get_json()
 
-    req_id = body.get('id',None)
-
-    drink = Drink.query.filter(Drink.id == req_id).one_or_none()
+    drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
     if drink == 0:
         abort(404)
@@ -182,7 +179,7 @@ def get_drinks_detail(jwt):
 
         return jsonify ({
             'success': True,
-            'drinks' : drink.long()
+            'deleted' : drink_id
         })
 
       except Exception as e:
