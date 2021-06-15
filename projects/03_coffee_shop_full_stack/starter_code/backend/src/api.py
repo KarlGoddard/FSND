@@ -61,24 +61,25 @@ def get_drinks():
 
 @app.route('/drinks-detail', methods=['GET'])
 @requires_auth('get:drinks-detail')
-def get_drinks_detail(jwt):
-  try:
-    drinks = Drink.query.all()
+def get_drinks_details(jwt):
+      try:
+        drinks = Drink.query.order_by(Drink.id).all()
+        get_drinklist = [drink.long() for drink in drinks]
+        # get_drinklist = []
+        # for dk in drinks:
+        #     get_drinklist.append(dk.long())
 
-    get_drinklist = []
-    for dk in drinks:
-        get_drinklist.append(dk.long())
+        if len(get_drinklist) == 0:
+          abort(404)
 
-    if len(get_drinklist) == 0:
-      abort(404)
+        return jsonify ({
+            'success': True,
+            'drinks' : get_drinklist
+        })
+      except Exception as e:
+        print(e)
+        abort(422)
 
-    return jsonify ({
-        'success': True,
-        'drinks' : get_drinklist
-    })
-  except Exception as e:
-    print(e)
-    abort(422)
 
 '''
 @TODO implement endpoint
@@ -90,70 +91,70 @@ def get_drinks_detail(jwt):
         or appropriate status code indicating reason for failure
 '''
 
-@app.route('/drinks', methods=['POST'])
-@requires_auth('post:drinks')
-def get_drinks_detail(jwt):
-    body = request.get_json()
-
-    req_title = body.get('title',None)
-    req_recipe = body.get('recipe',None)
-
-    if not (req_title and req_recipe):
-        abort(422)
-    else:
-      try:
-        drink = Drink(title=req_title, recipe=req_recipe)
-        drink.insert()
-
-        return jsonify ({
-            'success': True,
-            'drinks' : drink.long()
-        })
-
-      except Exception as e:
-        print(e)
-        abort(422)
+# @app.route('/drinks', methods=['POST'])
+# @requires_auth('post:drinks')
+# def get_drinks_new(jwt):
+#     body = request.get_json()
+#
+#     req_title = body.get('title',None)
+#     req_recipe = body.get('recipe',None)
+#
+#     if not (req_title and req_recipe):
+#         abort(422)
+#     else:
+#       try:
+#         drink = Drink(title=req_title, recipe=req_recipe)
+#         drink.insert()
+#
+#         return jsonify ({
+#             'success': True,
+#             'drinks' : drink.long()
+#         })
+#
+#       except Exception as e:
+#         print(e)
+#         abort(422)
 
 '''
-@TODO implement endpoint
-    PATCH /drinks/<id>
-        where <id> is the existing model id
-        it should respond with a 404 error if <id> is not found
-        it should update the corresponding row for <id>
-        it should require the 'patch:drinks' permission
-        it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
-        or appropriate status code indicating reason for failure
-'''
+# @TODO implement endpoint
+#     PATCH /drinks/<id>
+#         where <id> is the existing model id
+#         it should respond with a 404 error if <id> is not found
+#         it should update the corresponding row for <id>
+#         it should require the 'patch:drinks' permission
+#         it should contain the drink.long() data representation
+#     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
+#         or appropriate status code indicating reason for failure
+# '''
 
-@app.route('/drinks/<int:drink_id>', methods=['PATCH'])
-@requires_auth('patch:drinks')
-def get_drinks_detail(jwt):
-    body = request.get_json()
-
-    req_title = body.get('title',None)
-    req_recipe = body.get('recipe',None)
-
-    drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
-
-    if drink == 0:
-        abort(404)
-    else:
-      try:
-        if req_title:
-            drink.title = req_title
-        if req_recipe:
-            drink.recipe = req_recipe
-        drink.update()
-
-        return jsonify ({
-            'success': True,
-            'drinks' : drink.long()
-        })
-
-      except Exception as e:
-        print(e)
-        abort(422)
+# @app.route('/drinks/<int:drink_id>', methods=['PATCH'])
+# @requires_auth('patch:drinks')
+# def get_drinks_edit(jwt):
+#     body = request.get_json()
+#
+#     req_title = body.get('title',None)
+#     req_recipe = body.get('recipe',None)
+#
+#     drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
+#
+#     if drink == 0:
+#         abort(404)
+#     else:
+#       try:
+#         if req_title:
+#             drink.title = req_title
+#         if req_recipe:
+#             drink.recipe = req_recipe
+#         drink.update()
+#
+#         return jsonify ({
+#             'success': True,
+#             'drinks' : drink.long()
+#         })
+#
+#       except Exception as e:
+#         print(e)
+#         abort(422)
 
 '''
 @TODO implement endpoint
@@ -166,26 +167,26 @@ def get_drinks_detail(jwt):
         or appropriate status code indicating reason for failure
 '''
 
-@app.route('/drinks/<int:drink_id>', methods=['DELETE'])
-@requires_auth('delete:drinks')
-def get_drinks_detail(jwt):
-
-    drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
-
-    if drink == 0:
-        abort(404)
-    else:
-      try:
-        drink.delete()
-
-        return jsonify ({
-            'success': True,
-            'deleted' : drink_id
-        })
-
-      except Exception as e:
-        print(e)
-        abort(422)
+# @app.route('/drinks/<int:drink_id>', methods=['DELETE'])
+# @requires_auth('delete:drinks')
+# def drinks_delete(jwt):
+#
+#     drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
+#
+#     if drink == 0:
+#         abort(404)
+#     else:
+#       try:
+#         drink.delete()
+#
+#         return jsonify ({
+#             'success': True,
+#             'deleted' : drink_id
+#         })
+#
+#       except Exception as e:
+#         print(e)
+#         abort(422)
 
 # Error Handling
 '''
@@ -215,11 +216,17 @@ def unprocessable(error):
     error handler should conform to general task above
 '''
 @app.errorhandler(AuthError)
-def auth_error(error):
-    return jsonify({
-        "success": False,
-        "error": error.description
-    }), error.status_code
+def error_authError(error):
+    response = jsonify(error.error)
+    response.status_code = error.status_code
+    return response
+# @app.errorhandler(AuthError)
+# def auth_error(error):
+#     return jsonify({
+#         "success": False,
+#         "error": 422,
+#         "message": "Authorisation Error"
+#     }), 422
 
     # raise AuthError({
     #             'code': 'invalid_header',
