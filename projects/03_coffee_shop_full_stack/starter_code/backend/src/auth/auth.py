@@ -148,11 +148,11 @@ def verify_decode_jwt(token):
             raise AuthError({
                 'code': 'invalid_header',
                 'description': 'Unable to parse authentication token.'
-            }, 400)
+            }, 403)
     raise AuthError({
                 'code': 'invalid_header',
                 'description': 'Unable to find the appropriate key.'
-            }, 400)
+            }, 403)
 
 '''
 @TODO implement @requires_auth(permission) decorator method
