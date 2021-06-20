@@ -91,29 +91,29 @@ def get_drinks_details(jwt):
         or appropriate status code indicating reason for failure
 '''
 
-# @app.route('/drinks', methods=['POST'])
-# @requires_auth('post:drinks')
-# def get_drinks_new(jwt):
-#     body = request.get_json()
-#
-#     req_title = body.get('title',None)
-#     req_recipe = body.get('recipe',None)
-#
-#     if not (req_title and req_recipe):
-#         abort(422)
-#     else:
-#       try:
-#         drink = Drink(title=req_title, recipe=req_recipe)
-#         drink.insert()
-#
-#         return jsonify ({
-#             'success': True,
-#             'drinks' : drink.long()
-#         })
-#
-#       except Exception as e:
-#         print(e)
-#         abort(422)
+@app.route('/drinks', methods=['POST'])
+@requires_auth('post:drinks')
+def get_drinks_new(jwt):
+    body = request.get_json()
+
+    req_title = body.get('title',None)
+    req_recipe = body.get('recipe',None)
+
+    if not (req_title and req_recipe):
+        abort(422)
+    else:
+      try:
+        drink = Drink(title=req_title, recipe=req_recipe)
+        drink.insert()
+
+        return jsonify ({
+            'success': True,
+            'drinks' : drink.long()
+        }),200
+
+      except Exception as e:
+        print(e)
+        abort(422)
 
 '''
 # @TODO implement endpoint
@@ -127,34 +127,34 @@ def get_drinks_details(jwt):
 #         or appropriate status code indicating reason for failure
 # '''
 
-# @app.route('/drinks/<int:drink_id>', methods=['PATCH'])
-# @requires_auth('patch:drinks')
-# def get_drinks_edit(jwt):
-#     body = request.get_json()
-#
-#     req_title = body.get('title',None)
-#     req_recipe = body.get('recipe',None)
-#
-#     drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
-#
-#     if drink == 0:
-#         abort(404)
-#     else:
-#       try:
-#         if req_title:
-#             drink.title = req_title
-#         if req_recipe:
-#             drink.recipe = req_recipe
-#         drink.update()
-#
-#         return jsonify ({
-#             'success': True,
-#             'drinks' : drink.long()
-#         })
-#
-#       except Exception as e:
-#         print(e)
-#         abort(422)
+@app.route('/drinks/<int:drink_id>', methods=['PATCH'])
+@requires_auth('patch:drinks')
+def get_drinks_edit(jwt):
+    body = request.get_json()
+
+    req_title = body.get('title',None)
+    req_recipe = body.get('recipe',None)
+
+    drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
+
+    if drink == 0:
+        abort(404)
+    else:
+      try:
+        if req_title:
+            drink.title = req_title
+        if req_recipe:
+            drink.recipe = req_recipe
+        drink.update()
+
+        return jsonify ({
+            'success': True,
+            'drinks' : drink.long()
+        })
+
+      except Exception as e:
+        print(e)
+        abort(422)
 
 '''
 @TODO implement endpoint
@@ -167,26 +167,26 @@ def get_drinks_details(jwt):
         or appropriate status code indicating reason for failure
 '''
 
-# @app.route('/drinks/<int:drink_id>', methods=['DELETE'])
-# @requires_auth('delete:drinks')
-# def drinks_delete(jwt):
-#
-#     drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
-#
-#     if drink == 0:
-#         abort(404)
-#     else:
-#       try:
-#         drink.delete()
-#
-#         return jsonify ({
-#             'success': True,
-#             'deleted' : drink_id
-#         })
-#
-#       except Exception as e:
-#         print(e)
-#         abort(422)
+@app.route('/drinks/<int:drink_id>', methods=['DELETE'])
+@requires_auth('delete:drinks')
+def drinks_delete(jwt):
+
+    drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
+
+    if drink == 0:
+        abort(404)
+    else:
+      try:
+        drink.delete()
+
+        return jsonify ({
+            'success': True,
+            'deleted' : Drink.id
+        })
+
+      except Exception as e:
+        print(e)
+        abort(422)
 
 # Error Handling
 '''
