@@ -103,7 +103,7 @@ def get_drinks_new(jwt):
         abort(422)
     else:
       try:
-        drink = Drink(title=req_title, recipe=req_recipe)
+        drink = Drink(title=req_title, recipe=json.dumps(req_recipe))
         drink.insert()
 
         return jsonify ({
