@@ -129,7 +129,7 @@ def get_drinks_new(jwt):
 
 @app.route('/drinks/<int:drink_id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
-def get_drinks_edit(jwt):
+def get_drinks_edit(jwt, drink_id):
     body = request.get_json()
 
     req_title = body.get('title',None)
@@ -149,7 +149,7 @@ def get_drinks_edit(jwt):
 
         return jsonify ({
             'success': True,
-            'drinks' : drink.long()
+            'drinks' : [drink.long()]
         })
 
       except Exception as e:
