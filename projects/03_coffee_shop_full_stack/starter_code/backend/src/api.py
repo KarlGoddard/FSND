@@ -17,7 +17,7 @@ CORS(app)
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this funciton will add one
 '''
-# db_drop_and_create_all()
+db_drop_and_create_all()
 
 # ROUTES
 '''
@@ -169,7 +169,7 @@ def get_drinks_edit(jwt):
 
 @app.route('/drinks/<int:drink_id>', methods=['DELETE'])
 @requires_auth('delete:drinks')
-def drinks_delete(jwt):
+def drinks_delete(jwt, drink_id):
 
     drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
@@ -181,7 +181,7 @@ def drinks_delete(jwt):
 
         return jsonify ({
             'success': True,
-            'deleted' : Drink.id
+            'deleted' : drink_id
         })
 
       except Exception as e:
