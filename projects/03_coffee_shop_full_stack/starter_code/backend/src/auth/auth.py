@@ -154,6 +154,8 @@ def verify_decode_jwt(token):
                 'description': 'Unable to find the appropriate key.'
             }, 403)
 
+# changed latter 2 header errors to 403 from 400 - now passes tests for Barista
+
 '''
 @TODO implement @requires_auth(permission) decorator method
     @INPUTS
